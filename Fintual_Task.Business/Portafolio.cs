@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Fintual_Task.Negocio
 {
@@ -11,16 +12,41 @@ namespace Fintual_Task.Negocio
 
         public Dictionary<string, decimal> DistribucionObjetivo { get; set; } = new Dictionary<string, decimal>();
 
-        public void AgregarAccion(Accion accion)
+        public bool AgregarAccion(Accion accion)
         {
-            Acciones.Add(accion);
+            try
+            {
+                var existente = Acciones.FirstOrDefault(a => a.Nombre == accion.Nombre);
+                if (existente != null)
+                {
+                    var totalCantidad = existente.Cantidad + accion.Cantidad;
+                    var precioPromedio = ((existente.PrecioActual * existente.Cantidad) + (accion.PrecioActual * accion.Cantidad)) / totalCantidad;
+
+                    existente.Cantidad = totalCantidad;
+                    existente.PrecioActual = precioPromedio;
+                }
+                else
+                {
+                    Acciones.Add(accion);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public List<Accion> GetAcciones()
+        {
+            return Acciones;
         }
 
         public Dictionary<string, decimal> Rebalancear()
         {
-            var totalActual = Acciones.Sum(a => a.GetValor());
+            var totalActual = Acciones.Sum(a => a.PrecioActual * a.Cantidad);
             var rebalanceo = new Dictionary<string, decimal>();
-
+            decimal umbral = 100m; 
             foreach (var objetivo in DistribucionObjetivo)
             {
                 var nombre = objetivo.Key;
@@ -28,10 +54,14 @@ namespace Fintual_Task.Negocio
                 var valorEsperado = totalActual * porcentajeDeseado;
 
                 var accion = Acciones.FirstOrDefault(a => a.Nombre == nombre);
-                var valorActual = accion != null ? accion.GetValor() : 0;
+                var valorActual = accion != null ? accion.PrecioActual * accion.Cantidad : 0;
 
                 var diferencia = valorEsperado - valorActual;
-                rebalanceo[nombre] = diferencia;
+
+                if (Math.Abs(diferencia) >= umbral)
+                    rebalanceo[nombre] = diferencia;
+                else
+                    rebalanceo[nombre] = 0m; 
             }
             return rebalanceo;
         }
