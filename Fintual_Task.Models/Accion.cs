@@ -10,19 +10,13 @@ namespace Fintual_Task.Models
     {
         public string Nombre { get; set; }
         public decimal PrecioActual { get; set; }
-        public decimal Cantidad { get; set; }
+        public int Cantidad { get; set; }
 
-        public Accion(string nombre, decimal precio, decimal cantidad)
+        public Accion(string nombre, decimal precio, int cantidad)
         {
             Nombre = nombre;
             PrecioActual = precio;
             Cantidad = cantidad;
         }
-
-        public decimal GetValor()
-        {
-            return PrecioActual * Cantidad;
-        }
     }
-
 }
