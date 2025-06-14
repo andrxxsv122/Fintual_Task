@@ -230,6 +230,16 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Fintual_Task.Business\Fintual_Task.Business.csproj">
+      <Project>{18C45A2E-D54D-48A7-9093-F80338BC8EB5}</Project>
+      <Name>Fintual_Task.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="Fintual_Task.Models\Fintual_Task.Models.csproj">
+      <Project>{53BDFC17-700D-4F9A-B244-F7EDADF4F222}</Project>
+      <Name>Fintual_Task.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
